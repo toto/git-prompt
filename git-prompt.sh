@@ -225,12 +225,15 @@ set_shell_title() {
 	#then 
 	host=${HOSTNAME}
 	#host=`hostname --short`
+    
+    
 	[[ $upcase_hostname = "on" ]] && host=`echo ${host%$default_host} | tr a-z A-Z`
 	#host=`echo ${host} | tr a-z A-Z`
 	
-        host_color=${host}_host_color
-        host_color=${!host_color}
-        if [[ -z $host_color && -x /usr/bin/cksum ]] ;  then 
+    host_color=${host}_host_color
+    host_color=${!host_color}
+        
+    if [[ -z $host_color && -x /usr/bin/cksum ]] ;  then 
 		cksum_color_no=`echo $host | cksum  | awk '{print $1%7}'`
 		color_index=(green yellow blue magenta cyan white)		# FIXME:  bw,  color-256
 		host_color=${color_index[cksum_color_no]}
@@ -248,7 +251,7 @@ set_shell_title() {
 	
 	if [[ -n $id  || -n $host ]] ;   then 
 		[[ -n $id  &&  -n $host ]]  &&  at='@'  || at=''
-		color_who_where="${id}$at${host:+$host_color$host}${tty:+ $tty}"
+		color_who_where="${id:+$host_color$id}$at${host:+$host_color$host}${tty:+ $tty}"
 		plain_who_where="${id}$at$host"
 
 		# add trailing " "
@@ -524,7 +527,7 @@ prompt_command_function() {
 	set_shell_title "$PWD/" 
 	parse_vcs_status
 	truncate_working_directory
-	PS1="$colors_reset$rc$head_local$label$color_who_where$dir_color$pwd$tail_local$dir_color> $colors_reset"
+	PS1="$colors_reset$rc$head_local$label$color_who_where$dir_color$pwd$tail_local$dir_color$colors_reset\$ $colors_reset"
 	
 	unset head_local tail_local pwd
  }
